@@ -728,7 +728,7 @@ module.exports = class RPAssistant {
     injectCSS() {
         const css = `
             :root {
-                --rp-panel-width: 380px;
+                --rp-panel-width: 420px;
                 --rp-panel-top-gap: 16px;
             }
             #rp-assistant-panel {
@@ -739,10 +739,11 @@ module.exports = class RPAssistant {
                 height: calc(100vh - (var(--rp-panel-top-gap) * 2));
                 background:
                     radial-gradient(circle at top right, rgba(88, 101, 242, 0.18), transparent 34%),
-                    linear-gradient(180deg, rgba(35, 37, 41, 0.98), rgba(24, 25, 29, 0.98));
+                    radial-gradient(circle at bottom left, rgba(250, 166, 26, 0.08), transparent 30%),
+                    linear-gradient(180deg, rgba(35, 37, 41, 0.98), rgba(20, 21, 25, 0.99));
                 color: var(--text-normal, #dbdee1);
                 z-index: 1000;
-                box-shadow: -18px 0 44px rgba(0, 0, 0, 0.35);
+                box-shadow: -24px 0 56px rgba(0, 0, 0, 0.42), inset 1px 0 0 rgba(255, 255, 255, 0.03);
                 transition: right 0.28s ease;
                 display: flex;
                 flex-direction: column;
@@ -750,7 +751,22 @@ module.exports = class RPAssistant {
                 border-left: 1px solid var(--background-modifier-accent);
                 border-radius: 18px 0 0 18px;
                 overflow: hidden;
-                backdrop-filter: blur(14px);
+                backdrop-filter: blur(16px) saturate(115%);
+                isolation: isolate;
+            }
+            #rp-assistant-panel::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background:
+                    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 18%),
+                    linear-gradient(135deg, rgba(88, 101, 242, 0.04), transparent 36%);
+                pointer-events: none;
+                z-index: 0;
+            }
+            #rp-assistant-panel > * {
+                position: relative;
+                z-index: 1;
             }
             #rp-assistant-panel.open {
                 right: 0;
@@ -759,13 +775,14 @@ module.exports = class RPAssistant {
                 position: sticky;
                 top: 0;
                 z-index: 2;
-                background: linear-gradient(180deg, rgba(35, 37, 41, 0.98), rgba(35, 37, 41, 0.92));
-                padding: 18px;
+                background: linear-gradient(180deg, rgba(35, 37, 41, 0.98), rgba(31, 33, 37, 0.92));
+                padding: 16px 18px 14px;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 gap: 12px;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+                box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.03);
                 font-weight: 800;
                 font-size: 16px;
                 letter-spacing: 0.01em;
@@ -798,55 +815,66 @@ module.exports = class RPAssistant {
             .rp-quick-actions {
                 display: grid;
                 grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 8px;
+                gap: 10px;
                 padding: 0 18px 16px;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                background: linear-gradient(180deg, rgba(255, 255, 255, 0.015), transparent);
             }
             .rp-quick-action-btn {
-                min-height: 42px;
-                background: rgba(255, 255, 255, 0.04);
+                min-height: 46px;
+                background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
                 color: var(--text-normal, #dbdee1);
-                border: 1px solid rgba(255, 255, 255, 0.05);
-                border-radius: 14px;
-                padding: 8px 10px;
+                border: 1px solid rgba(255, 255, 255, 0.06);
+                border-radius: 16px;
+                padding: 10px 14px;
                 cursor: pointer;
-                font-size: 12px;
+                font-size: 13px;
                 font-weight: 700;
                 white-space: nowrap;
                 display: inline-flex;
                 align-items: center;
-                justify-content: center;
-                text-align: center;
-                transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+                justify-content: flex-start;
+                gap: 8px;
+                text-align: left;
+                line-height: 1.1;
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+                transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
             }
             .rp-quick-action-btn:hover {
-                background: rgba(255, 255, 255, 0.08);
-                border-color: rgba(88, 101, 242, 0.35);
+                background: rgba(255, 255, 255, 0.1);
+                border-color: rgba(88, 101, 242, 0.38);
                 transform: translateY(-1px);
+                box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
             }
             .rp-content {
-                padding: 16px 18px 18px;
+                padding: 16px 16px 18px;
                 overflow-y: auto;
                 flex-grow: 1;
                 display: flex;
                 flex-direction: column;
-                gap: 14px;
+                gap: 12px;
             }
             .rp-card {
                 margin-bottom: 0;
-                background: linear-gradient(180deg, rgba(49, 51, 56, 0.96), rgba(43, 45, 49, 0.98));
-                border: 1px solid rgba(255, 255, 255, 0.05);
-                border-radius: 18px;
-                padding: 14px;
+                background: linear-gradient(180deg, rgba(49, 51, 56, 0.94), rgba(41, 43, 48, 0.99));
+                border: 1px solid rgba(255, 255, 255, 0.06);
+                border-radius: 20px;
+                padding: 15px;
                 box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+                transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+            }
+            .rp-card:hover {
+                transform: translateY(-1px);
+                border-color: rgba(88, 101, 242, 0.18);
+                box-shadow: 0 16px 30px rgba(0, 0, 0, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.03);
             }
             .rp-card-title {
-                font-size: 11px;
+                font-size: 12px;
                 font-weight: 800;
                 color: var(--text-muted, #949ba4);
                 text-transform: uppercase;
-                letter-spacing: 0.08em;
-                margin-bottom: 8px;
+                letter-spacing: 0.09em;
+                margin-bottom: 10px;
                 display: flex;
                 justify-content: space-between;
                 gap: 10px;
@@ -859,23 +887,23 @@ module.exports = class RPAssistant {
             .rp-dashboard-layout {
                 display: flex;
                 flex-direction: column;
-                gap: 12px;
+                gap: 10px;
             }
             .rp-profile-summary {
                 display: flex;
                 align-items: flex-start;
-                gap: 12px;
+                gap: 14px;
                 margin-bottom: 0;
             }
             .rp-profile-stack {
                 min-width: 0;
                 display: flex;
                 flex-direction: column;
-                gap: 8px;
+                gap: 7px;
             }
             .rp-avatar-placeholder {
-                width: 52px;
-                height: 52px;
+                width: 56px;
+                height: 56px;
                 border-radius: 50%;
                 background: radial-gradient(circle at 30% 30%, rgba(88, 101, 242, 0.28), rgba(43, 45, 49, 0.92));
                 display: flex;
@@ -889,8 +917,8 @@ module.exports = class RPAssistant {
             }
             .rp-avatar-media {
                 position: relative;
-                width: 52px;
-                height: 52px;
+                width: 56px;
+                height: 56px;
                 flex-shrink: 0;
                 cursor: pointer;
                 overflow: hidden;
@@ -915,7 +943,7 @@ module.exports = class RPAssistant {
             }
             .rp-profile-name {
                 font-weight: 800;
-                font-size: 17px;
+                font-size: 18px;
                 line-height: 1.15;
             }
             .rp-profile-status {
@@ -926,7 +954,7 @@ module.exports = class RPAssistant {
             .rp-profile-badges {
                 display: flex;
                 flex-wrap: wrap;
-                gap: 8px;
+                gap: 7px;
                 min-height: 24px;
             }
             .rp-profile-badge {
@@ -955,17 +983,17 @@ module.exports = class RPAssistant {
             .rp-stat-grid {
                 display: grid;
                 grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 10px;
+                gap: 8px;
             }
             .rp-stat {
                 display: flex;
                 flex-direction: column;
                 gap: 4px;
                 min-width: 0;
-                padding: 10px 12px;
+                padding: 10px 11px;
                 border-radius: 14px;
-                background: rgba(255, 255, 255, 0.03);
-                border: 1px solid rgba(255, 255, 255, 0.04);
+                background: rgba(255, 255, 255, 0.035);
+                border: 1px solid rgba(255, 255, 255, 0.045);
             }
             .rp-stat-label {
                 font-size: 11px;
@@ -992,6 +1020,7 @@ module.exports = class RPAssistant {
             .rp-message-card {
                 min-height: 0;
                 border-left: 4px solid var(--text-link, #00a8fc);
+                background: linear-gradient(180deg, rgba(46, 49, 55, 0.98), rgba(39, 41, 46, 0.99));
                 box-shadow: inset 4px 0 0 rgba(88, 101, 242, 0.45);
             }
             .rp-scene-card {
@@ -1053,6 +1082,9 @@ module.exports = class RPAssistant {
             }
             #rp-assistant-panel .rp-message-card .rp-message-textarea {
                 min-height: 92px;
+            }
+            #rp-assistant-panel .rp-message-card .rp-message-textarea {
+                min-height: 96px;
             }
             .rp-message-popup .rp-message-textarea {
                 min-height: 180px;
@@ -1242,14 +1274,15 @@ module.exports = class RPAssistant {
             }
             .rp-character-sheet-card {
                 border-left: 4px solid rgba(255, 196, 61, 0.65);
+                background: linear-gradient(180deg, rgba(52, 49, 43, 0.96), rgba(41, 39, 35, 0.99));
             }
             .rp-character-sheet-composer {
                 display: flex;
                 flex-direction: column;
-                gap: 12px;
+                gap: 10px;
             }
             .rp-character-sheet-textarea {
-                min-height: 220px;
+                min-height: 180px;
                 resize: vertical;
             }
             .rp-character-sheet-note {
@@ -1258,15 +1291,19 @@ module.exports = class RPAssistant {
                 color: var(--text-muted, #949ba4);
             }
             .rp-character-sheet-actions {
-                display: flex;
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
                 gap: 8px;
-                flex-wrap: wrap;
             }
             .rp-character-sheet-actions .rp-btn-secondary,
             .rp-character-sheet-actions .rp-btn-primary {
-                width: auto;
-                flex: 1;
+                width: 100%;
+                flex: none;
+                min-height: 58px;
+                padding: 12px 10px;
                 margin-top: 0;
+                line-height: 1.2;
+                white-space: normal;
             }
             .rp-ideas-card {
                 border-left: 4px solid rgba(255, 196, 61, 0.65);
