@@ -265,12 +265,6 @@ module.exports = class RPAssistant {
                 schedulePlaceholder: "15 ou 20:30",
                 sendNowTitle: "Envoyer maintenant",
                 sendLaterTitle: "Envoyer plus tard",
-                gifPrompt: "Tape un message pour générer des recherches GIF.",
-                gifFallback: "Aucune suggestion prête. Ouvre la recherche GIF manuellement.",
-                gifReady: "Recherche GIF prête.",
-                gifOpenSearch: "Ouvrir la recherche GIF",
-                gifDirectSearch: "Recherche directe",
-                gifNsfwSearch: "NSFW",
                 statusEmpty: "Aucun message enregistré.",
                 statusReady: "Message prêt à être envoyé",
                 statusReadyScheduled: "Message prêt pour envoi",
@@ -326,12 +320,6 @@ module.exports = class RPAssistant {
                 schedulePlaceholder: "15 or 20:30",
                 sendNowTitle: "Send now",
                 sendLaterTitle: "Send later",
-                gifPrompt: "Type a message to generate GIF searches.",
-                gifFallback: "No suggestion available. Open the GIF search manually.",
-                gifReady: "GIF search ready.",
-                gifOpenSearch: "Open GIF search",
-                gifDirectSearch: "Direct search",
-                gifNsfwSearch: "NSFW",
                 statusEmpty: "No saved message.",
                 statusReady: "Message ready to send",
                 statusReadyScheduled: "Ready to send",
@@ -1000,7 +988,7 @@ module.exports = class RPAssistant {
                 text-align: right;
             }
             .rp-message-card {
-                min-height: 100%;
+                min-height: 0;
                 border-left: 4px solid var(--text-link, #00a8fc);
                 box-shadow: inset 4px 0 0 rgba(88, 101, 242, 0.45);
             }
@@ -1047,6 +1035,9 @@ module.exports = class RPAssistant {
                 flex-direction: column;
                 gap: 12px;
             }
+            #rp-assistant-panel .rp-message-card .rp-message-composer {
+                gap: 10px;
+            }
             .rp-message-textarea {
                 min-height: 110px;
                 resize: vertical;
@@ -1057,6 +1048,9 @@ module.exports = class RPAssistant {
                 padding: 12px;
                 font: inherit;
                 line-height: 1.45;
+            }
+            #rp-assistant-panel .rp-message-card .rp-message-textarea {
+                min-height: 92px;
             }
             .rp-message-popup .rp-message-textarea {
                 min-height: 180px;
@@ -1138,84 +1132,6 @@ module.exports = class RPAssistant {
                 font-size: 12px;
                 color: var(--text-muted, #949ba4);
                 min-height: 16px;
-            }
-            .rp-gif-suggestions {
-                display: grid;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 10px;
-                margin-top: 4px;
-            }
-            .rp-gif-card {
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-start;
-                gap: 8px;
-                height: 132px;
-                padding: 12px;
-                border-radius: 14px;
-                border: 1px solid rgba(255, 255, 255, 0.06);
-                background: linear-gradient(180deg, rgba(43, 45, 49, 0.96), rgba(35, 37, 41, 0.98));
-                text-decoration: none;
-                color: var(--text-normal, #dbdee1);
-                overflow: hidden;
-                transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
-            }
-            .rp-gif-card-nsfw {
-                border-color: rgba(255, 77, 109, 0.22);
-            }
-            .rp-gif-card:hover {
-                transform: translateY(-1px);
-                border-color: rgba(88, 101, 242, 0.35);
-                background: linear-gradient(180deg, rgba(49, 51, 56, 0.98), rgba(43, 45, 49, 0.98));
-                box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
-            }
-            .rp-gif-card-badge {
-                display: inline-flex;
-                align-items: center;
-                align-self: flex-start;
-                padding: 3px 8px;
-                border-radius: 999px;
-                background: rgba(255, 196, 61, 0.14);
-                color: #ffd77a;
-                font-size: 10px;
-                font-weight: 800;
-                letter-spacing: 0.06em;
-                text-transform: uppercase;
-            }
-            .rp-gif-card-badge-nsfw {
-                background: rgba(255, 77, 109, 0.16);
-                color: #ff9eb0;
-            }
-            .rp-gif-card-title {
-                font-size: 13px;
-                font-weight: 800;
-                line-height: 1.2;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-            }
-            .rp-gif-card-query {
-                font-size: 12px;
-                line-height: 1.3;
-                color: rgba(219, 222, 225, 0.8);
-                display: -webkit-box;
-                -webkit-line-clamp: 3;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-            }
-            .rp-gif-card-placeholder {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                min-height: 156px;
-                padding: 14px;
-                border-radius: 14px;
-                border: 1px dashed rgba(255, 255, 255, 0.08);
-                background: rgba(255, 255, 255, 0.03);
-                color: var(--text-muted, #949ba4);
-                text-align: center;
-                line-height: 1.4;
             }
             .rp-dashboard-popup {
                 position: fixed;
@@ -1926,7 +1842,6 @@ module.exports = class RPAssistant {
                         </div>
                     </div>
                     <div class="rp-message-status" data-rp-send-status>${this.renderMessageStatus()}</div>
-                    <div class="rp-gif-suggestions" data-rp-gif-suggestions>${this.renderGifSuggestions(messageDraft)}</div>
                 </div>
             </div>
         `;
@@ -2948,11 +2863,6 @@ module.exports = class RPAssistant {
         if (statusNode) {
             statusNode.textContent = this.renderMessageStatus();
         }
-
-        const gifNode = panel.querySelector("[data-rp-gif-suggestions]");
-        if (gifNode) {
-            gifNode.innerHTML = this.renderGifSuggestions(this.profile.messageDraft);
-        }
     }
 
     focusMessageComposer(panel) {
@@ -2963,115 +2873,6 @@ module.exports = class RPAssistant {
                 messageField.scrollIntoView({ block: "center", behavior: "smooth" });
             }
         }
-    }
-
-    renderGifSuggestions(message) {
-        const cleanedMessage = this.cleanText(message);
-        if (!cleanedMessage) {
-            return `<div class="rp-gif-card-placeholder">${this.escapeHtml(this.labels.gifPrompt)}</div>`;
-        }
-
-        const suggestions = this.getGifSuggestions(cleanedMessage);
-        if (!suggestions.length) {
-            return `<div class="rp-gif-card-placeholder">${this.escapeHtml(this.labels.gifFallback)}</div>`;
-        }
-
-        return this.renderGifCards(suggestions, cleanedMessage);
-    }
-
-    getGifSuggestions(message) {
-        const cleanedMessage = this.cleanText(message);
-        if (!cleanedMessage) {
-            return [];
-        }
-
-        const keywords = this.extractGifKeywords(cleanedMessage);
-        const basePhrase = keywords.slice(0, 5).join(" ") || cleanedMessage;
-
-        const baseSuggestions = [
-            {
-                title: `1. ${this.labels.gifDirectSearch}`,
-                query: cleanedMessage
-            },
-            {
-                title: `🔞 ${this.labels.gifNsfwSearch}`,
-                query: `porn ${basePhrase}`,
-                nsfw: true
-            }
-        ];
-
-        const uniqueSuggestions = [];
-        const seenQueries = new Set();
-        for (const suggestion of baseSuggestions) {
-            if (seenQueries.has(suggestion.query)) {
-                continue;
-            }
-
-            seenQueries.add(suggestion.query);
-            uniqueSuggestions.push(suggestion);
-        }
-
-        return uniqueSuggestions.slice(0, 3);
-    }
-
-    renderGifCards(gifCards, query) {
-        if (!Array.isArray(gifCards) || !gifCards.length) {
-            return this.renderGifFallback(query);
-        }
-
-        return gifCards.map(gifCard => {
-            const title = this.cleanText(gifCard.title) || this.cleanText(query) || "GIF";
-            const searchText = this.cleanText(gifCard.query) || this.cleanText(query) || title;
-            const pageUrl = this.buildGoogleGifSearchUrl(searchText);
-            const isNsfw = Boolean(gifCard.nsfw) || /\bnsfw\b/i.test(searchText) || /🔞/.test(title);
-            const badgeLabel = isNsfw ? "🔞" : "GIF";
-
-            return `
-                <a class="rp-gif-card ${isNsfw ? "rp-gif-card-nsfw" : ""}" href="${this.escapeHtml(pageUrl)}" target="_blank" rel="noreferrer noopener" title="${this.escapeHtml(title)}" aria-label="${this.escapeHtml(title)}">
-                    <span class="rp-gif-card-badge ${isNsfw ? "rp-gif-card-badge-nsfw" : ""}">${badgeLabel}</span>
-                    <span class="rp-gif-card-title">${this.escapeHtml(title)}</span>
-                    <span class="rp-gif-card-query">${this.escapeHtml(searchText)}</span>
-                </a>
-            `;
-        }).join("");
-    }
-
-    renderGifFallback(query) {
-        const searchUrl = this.buildGoogleGifSearchUrl(query);
-        return `
-            <div class="rp-gif-card-placeholder">
-                <div>
-                    <div>${this.escapeHtml(this.labels.gifReady)}</div>
-                    <div style="margin-top: 6px;">
-                        <a class="rp-link-btn" href="${this.escapeHtml(searchUrl)}" target="_blank" rel="noreferrer noopener">${this.escapeHtml(this.labels.gifOpenSearch)}</a>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    extractGifKeywords(message) {
-        const stopWords = new Set([
-            "a", "alors", "au", "aux", "avec", "ce", "ces", "dans", "de", "des", "du", "elle", "elles",
-            "et", "eux", "il", "ils", "je", "la", "le", "les", "leur", "lui", "ma", "mais", "me",
-            "mes", "moi", "mon", "ne", "nos", "notre", "nous", "on", "ou", "par", "pas", "pour", "qu",
-            "que", "qui", "se", "ses", "son", "sur", "ta", "te", "tes", "toi", "ton", "tu", "un",
-            "une", "vos", "votre", "vous", "deux", "trois", "cinq", "si", "sans", "plus", "moins",
-            "être", "etre", "avoir", "faire", "fais", "fait", "vais", "va", "je", "tu", "il", "elle",
-            "nous", "vous", "ils", "elles", "suis", "es", "est", "sommes", "êtes", "sont", "me", "moi"
-        ]);
-
-        return this.cleanText(message)
-            .toLowerCase()
-            .replace(/[^\p{L}\p{N}\s'-]+/gu, " ")
-            .split(/\s+/)
-            .map(word => word.trim())
-            .filter(word => word.length > 2 && !stopWords.has(word));
-    }
-
-    buildGoogleGifSearchUrl(query) {
-        const normalizedQuery = this.cleanText(query);
-        return `https://www.google.com/search?tbm=isch&tbs=itp:animated&safe=off&hl=${this.language === "en" ? "en" : "fr"}&q=${encodeURIComponent(normalizedQuery)}`;
     }
 
     async queueMessageSend({ schedule = false } = {}) {
