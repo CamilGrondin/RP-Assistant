@@ -3,6 +3,8 @@
  * @author pink_momo_4
  * @description Assistant RolePlay intégré avec tableau de bord, suivi des scènes, rappels et notes.
  * @version 1.0.0
+ * @source https://github.com/CamilGrondin/RP-Assistant
+ * @updateUrl https://raw.githubusercontent.com/CamilGrondin/RP-Assistant/main/RPAssistant.plugin.js
  */
 
 module.exports = class RPAssistant {
